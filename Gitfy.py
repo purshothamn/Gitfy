@@ -123,8 +123,6 @@ class Gitfy:
                     else:
                         print(f'Not a valid file {i}')
         if checker:
-            print(f)
-            input('Debug')
             for e in f:
                 self.command(f'git add {e}')
             print('New files added: '+str(f))
