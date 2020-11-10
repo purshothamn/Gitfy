@@ -48,161 +48,115 @@ class Gitfy:
                 return lf
         else:
             return []
-    
-    def addFiles(self,repoDir=None,force=False,commitMsg=None):
+
+    def addNewFiles(self,repoDir=None,files=None):
         if repoDir == None:
             repoDir = os.getcwd()
         else:
             repoDir = repoDir
         os.chdir(repoDir)
         f = []
-        f.extend(self.getNewFiles())
-        print('lists of New files that can be added: '+str(f))
-        if force:
-            for i in f:
-                self.command(f'git add {i}')
-                if commitMsg == None:
-                    if os.path.exists('changelog.txt'):
-                        self.command("git commit -m 'Refer_changelog.txt'")
-                    else:
-                        self.command(f"git commit -m 'added {i}'")
-                else:
-                    commitMsg = commitMsg.replace(' ','_')
-                    self.command(f"git commit -m '{commitMsg}'")
-            self.gitPush(force=True)
+        checker = None
+        if files == None:
+            files = self.getNewFiles()
+            f.extend(files)
+            checker = True
         else:
-            ans = input('Do you want to add all the files?? Y/N')
-            if ans != 'y' or ans != 'Y' or ans != 'n' or ans != 'N':
-                while True:
-                    ans = input('Invalid option!! choose Y/N')
-                    if ans == 'y' or ans == 'Y' or ans == 'n' or ans == 'N': 
-                        break
-            if ans == 'y' or ans != 'Y':
-                for i in f:
-                    self.command(f'git add {i}')
-                if commitMsg == None:
-                    if os.path.exists('changelog.txt'):
-                        self.command("git commit -m 'Refer_changelog.txt'")
+            cfile = self.getNewFiles()
+            if files.find(','):
+                for i in files.split(','):
+                    if i in cfile:
+                        f.append(i)
+                        checker = True
                     else:
-                        res = input('Please type a valid commit message')
-                        if len(res) == 0:
-                            while True:
-                                res = input('Please type a valid commit message cannot be blank')
-                                if len(res) > 0:
-                                    break
-                        res = res.replace(' ','_')
-                        self.command(f"git commit -m '{res}'")
-                else:
-                    commitMsg = commitMsg.replace(' ','_')
-                    self.command(f"git commit -m '{commitMsg}'")
-                finalRes = input('Do you want to push the changes to repository?? Y/N')
-                if finalRes != 'y' or finalRes != 'Y' or finalRes != 'n' or finalRes != 'N':
+                        print(f'not a valid file {i}')
+            elif files.find(' '):
+                for i in files.split(' '):
+                    if i in cfile:
+                        f.append(i)
+                        checker = True
+                    else:
+                        print(f'Not a valid file {i}')
+            elif ',' not in files and ' ' not in files:
+                    if files in cfile:
+                        f.append(files)
+                        checker = True
+                    else:
+                        print(f'Not a valid file {i}')
+        if checker:
+            for e in f:
+                self.command(f'git add {e}')
+            print('New files added: '+str(f))
+
+    def addModifiedFiles(self,repoDir=None,files=None):
+        if repoDir == None:
+            repoDir = os.getcwd()
+        else:
+            repoDir = repoDir
+        os.chdir(repoDir)
+        f = []
+        checker = None
+        if files == None:
+            files = self.getModified()
+            f.extend(files)
+            checker = True
+        else:
+            cfile = self.getModified()
+            if files.find(','):
+                for i in files.split(','):
+                    if i in cfile:
+                        f.append(i)
+                        checker = True
+                    else:
+                        print(f'not a valid file {i}')
+            elif files.find(' '):
+                for i in files.split(' '):
+                    if i in cfile:
+                        f.append(i)
+                        checker = True
+                    else:
+                        print(f'Not a valid file {i}')
+            elif ',' not in files and ' ' not in files:
+                    if files in cfile:
+                        f.append(files)
+                        checker = True
+                    else:
+                        print(f'Not a valid file {i}')
+        if checker:
+            print(f)
+            input('Debug')
+            for e in f:
+                self.command(f'git add {e}')
+            print('New files added: '+str(f))
+
+    def gitCommit(self,commitMsg=None):
+        if commitMsg == None:
+            if os.path.exists('changelog.txt'):
+                self.command("git commit -m 'Refer_changelog.txt'")
+            else:
+                res = input('Please type a valid commit message')
+                if len(res) == 0:
                     while True:
-                        finalRes = input('Invalid response!! choose Y/N')
-                        if finalRes == 'y' or finalRes == 'Y' or finalRes == 'n' or finalRes == 'N':
+                        res = input('Please type a valid commit message cannot be blank')
+                        if len(res) > 0:
                             break
-                if finalRes == 'Y' or finalRes == 'y':
-                    self.gitPush()
-                if finalRes == 'N' or finalRes == 'n':
-                    print('Must do a push!! to repository')
-                    return
-            
-            if ans == 'N' or ans == 'n':
-                print(f)
-                req = input('Type in the file to add!! to add multiple files use (,) to separate')
-                if len(req) == 0:
-                    while True:
-                        req = input('Must added atleast one file!!')
-                        if len(req) > 0:
-                            break
-                if req.find(',') and len(req.split(',')) == len(f):
-                    che = None
-                    for i in req.split(','):
-                        for l in f:
-                            if re.findall(f'{i}.*',l):
-                                self.command(f'git add {l}')
-                                che = True
-                            else:
-                                print('not a valid file')
-                    if che == True:
-                        if commitMsg == None:
-                            if os.path.exists('changelog.txt'):
-                                self.command("git commit -m 'Refer_changelog.txt'")
-                            else:
-                                res = input('Please type a valid commit message')
-                                if len(res) == 0:
-                                    while True:
-                                        res = input('Please type a valid commit message cannot be blank')
-                                        if len(res) > 0:
-                                            break
-                                res = res.replace(' ','_')
-                                self.command(f"git commit -m '{res}'")
-                        else:
-                            commitMsg = commitMsg.replace(' ','_')
-                            self.command(f"git commit -m '{commitMsg}'")
-                            finalRes = input('Do you want to push the changes to repository?? Y/N')
-                            if finalRes != 'y' or finalRes != 'Y' or finalRes != 'n' or finalRes != 'N':
-                                while True:
-                                    finalRes = input('Invalid response!! choose Y/N')
-                                    if finalRes == 'y' or finalRes == 'Y' or finalRes == 'n' or finalRes == 'N':
-                                        break
-                            if finalRes == 'Y' or finalRes == 'y':
-                                self.gitPush()
-                            if finalRes == 'N' or finalRes == 'n':
-                                print('Must do a push!! to repository')
-                                return
-                    else:
-                        print('Error occurred!!')
-                        return
-                else:
-                    che = None
-                    for e in f:
-                        if re.findall(f'{req}.*',e):
-                            self.command(f'git add {e}')
-                            che = True
-                        else:
-                            print('not a valid file')
-                    if che == True:
-                        if commitMsg == None:
-                            if os.path.exists('changelog.txt'):
-                                self.command("git commit -m 'Refer_changelog.txt'")
-                            else:
-                                res = input('Please type a valid commit message')
-                                if len(res) == 0:
-                                    while True:
-                                        res = input('Please type a valid commit message cannot be blank')
-                                        if len(res) > 0:
-                                            break
-                                res = res.replace(' ','_')
-                                self.command(f"git commit -m '{res}'")
-                        else:
-                            commitMsg = commitMsg.replace(' ','_')
-                            self.command(f"git commit -m '{commitMsg}'")
-                            finalRes = input('Do you want to push the changes to repository?? Y/N')
-                            if finalRes != 'y' or finalRes != 'Y' or finalRes != 'n' or finalRes != 'N':
-                                while True:
-                                    finalRes = input('Invalid response!! choose Y/N')
-                                    if finalRes == 'y' or finalRes == 'Y' or finalRes == 'n' or finalRes == 'N':
-                                        break
-                            if finalRes == 'Y' or finalRes == 'y':
-                                self.gitPush()
-                            if finalRes == 'N' or finalRes == 'n':
-                                print('Must do a push!! to repository')
-                                return
-                    else:
-                        print('Error occurred!!')
-                        return
-    
+                res = res.replace(' ','_')
+                self.command(f"git commit -m '{res}'")
+        else:
+            commitMsg = commitMsg.replace(' ','_')
+            self.command(f"git commit -m '{commitMsg}'")
+
     def gitPush(self, branch='master', force=False):
         if force:
             if branch == 'master':
-                status = self.command('git push -uf orgin master')
+                self.command('git push -uf orgin master')
             else:
-                status = self.command(f'git push -uf orgin {branch}')
+                self.command(f'git push -uf orgin {branch}')
         else:
             if branch == 'master':
-                status = self.command('git push -u orgin master')
+                self.command('git push -u orgin master')
             else:
-                status = self.command(f'git push -u orgin {branch}')
+                self.command(f'git push -u orgin {branch}')
+
 # print(getNewFiles())
 # print(getModified())
