@@ -61,8 +61,15 @@ class Gitfy:
         if force:
             for i in f:
                 self.command(f'git add {i}')
-                self.command(f"git commit -m 'added{i}'")
-            self.command('git push -uf origin master ')
+                if commitMsg == None:
+                    if os.path.exists('changelog.txt'):
+                        self.command("git commit -m 'Refer_changelog.txt'")
+                    else:
+                        self.command(f"git commit -m 'added {i}'")
+                else:
+                    commitMsg = commitMsg.replace(' ','_')
+                    self.command(f"git commit -m '{commitMsg}'")
+            self.gitPush(force=True)
         else:
             ans = input('Do you want to add all the files?? Y/N')
             if ans != 'y' or ans != 'Y' or ans != 'n' or ans != 'N':
@@ -75,7 +82,7 @@ class Gitfy:
                     self.command(f'git add {i}')
                 if commitMsg == None:
                     if os.path.exists('changelog.txt'):
-                        self.command("git commit -m 'Refer changelog.txt'")
+                        self.command("git commit -m 'Refer_changelog.txt'")
                     else:
                         res = input('Please type a valid commit message')
                         if len(res) == 0:
@@ -83,9 +90,11 @@ class Gitfy:
                                 res = input('Please type a valid commit message cannot be blank')
                                 if len(res) > 0:
                                     break
-                        self.command(f"git commit -m {res}")
+                        res = res.replace(' ','_')
+                        self.command(f"git commit -m '{res}'")
                 else:
-                    self.command(f"git commit -m {commitMsg}")
+                    commitMsg = commitMsg.replace(' ','_')
+                    self.command(f"git commit -m '{commitMsg}'")
                 finalRes = input('Do you want to push the changes to repository?? Y/N')
                 if finalRes != 'y' or finalRes != 'Y' or finalRes != 'n' or finalRes != 'N':
                     while True:
@@ -93,7 +102,7 @@ class Gitfy:
                         if finalRes == 'y' or finalRes == 'Y' or finalRes == 'n' or finalRes == 'N':
                             break
                 if finalRes == 'Y' or finalRes == 'y':
-                    self.command('git push -uf origin master')
+                    self.gitPush()
                 if finalRes == 'N' or finalRes == 'n':
                     print('Must do a push!! to repository')
                     return
@@ -118,7 +127,7 @@ class Gitfy:
                     if che == True:
                         if commitMsg == None:
                             if os.path.exists('changelog.txt'):
-                                self.command("git commit -m 'Refer changelog.txt'")
+                                self.command("git commit -m 'Refer_changelog.txt'")
                             else:
                                 res = input('Please type a valid commit message')
                                 if len(res) == 0:
@@ -126,9 +135,11 @@ class Gitfy:
                                         res = input('Please type a valid commit message cannot be blank')
                                         if len(res) > 0:
                                             break
-                                self.command(f"git commit -m {res}")
+                                res = res.replace(' ','_')
+                                self.command(f"git commit -m '{res}'")
                         else:
-                            self.command(f"git commit -m {commitMsg}")
+                            commitMsg = commitMsg.replace(' ','_')
+                            self.command(f"git commit -m '{commitMsg}'")
                             finalRes = input('Do you want to push the changes to repository?? Y/N')
                             if finalRes != 'y' or finalRes != 'Y' or finalRes != 'n' or finalRes != 'N':
                                 while True:
@@ -136,7 +147,7 @@ class Gitfy:
                                     if finalRes == 'y' or finalRes == 'Y' or finalRes == 'n' or finalRes == 'N':
                                         break
                             if finalRes == 'Y' or finalRes == 'y':
-                                self.command('git push -uf origin master')
+                                self.gitPush()
                             if finalRes == 'N' or finalRes == 'n':
                                 print('Must do a push!! to repository')
                                 return
@@ -154,7 +165,7 @@ class Gitfy:
                     if che == True:
                         if commitMsg == None:
                             if os.path.exists('changelog.txt'):
-                                self.command("git commit -m 'Refer changelog.txt'")
+                                self.command("git commit -m 'Refer_changelog.txt'")
                             else:
                                 res = input('Please type a valid commit message')
                                 if len(res) == 0:
@@ -162,9 +173,11 @@ class Gitfy:
                                         res = input('Please type a valid commit message cannot be blank')
                                         if len(res) > 0:
                                             break
-                                self.command(f"git commit -m {res}")
+                                res = res.replace(' ','_')
+                                self.command(f"git commit -m '{res}'")
                         else:
-                            self.command(f"git commit -m {commitMsg}")
+                            commitMsg = commitMsg.replace(' ','_')
+                            self.command(f"git commit -m '{commitMsg}'")
                             finalRes = input('Do you want to push the changes to repository?? Y/N')
                             if finalRes != 'y' or finalRes != 'Y' or finalRes != 'n' or finalRes != 'N':
                                 while True:
@@ -172,13 +185,24 @@ class Gitfy:
                                     if finalRes == 'y' or finalRes == 'Y' or finalRes == 'n' or finalRes == 'N':
                                         break
                             if finalRes == 'Y' or finalRes == 'y':
-                                self.command('git push -uf origin master')
+                                self.gitPush()
                             if finalRes == 'N' or finalRes == 'n':
                                 print('Must do a push!! to repository')
                                 return
                     else:
                         print('Error occurred!!')
                         return
-                    
+    
+    def gitPush(self, branch='master', force=False):
+        if force:
+            if branch == 'master':
+                status = self.command('git push -uf orgin master')
+            else:
+                status = self.command(f'git push -uf orgin {branch}')
+        else:
+            if branch == 'master':
+                status = self.command('git push -u orgin master')
+            else:
+                status = self.command(f'git push -u orgin {branch}')
 # print(getNewFiles())
 # print(getModified())
