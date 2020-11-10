@@ -1,0 +1,3 @@
+Gitfy
+V1.0:
+    *minor bug fixes
