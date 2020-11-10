@@ -55,38 +55,42 @@ class Gitfy:
         else:
             repoDir = repoDir
         os.chdir(repoDir)
-        f = []
-        checker = None
-        if files == None:
-            files = self.getNewFiles()
-            f.extend(files)
-            checker = True
+        gf = self.getNewFiles()
+        if len(gf) > 0:
+            f = []
+            checker = None
+            if files == None:
+                files = self.getNewFiles()
+                f.extend(files)
+                checker = True
+            else:
+                cfile = self.getNewFiles()
+                if files.find(','):
+                    for i in files.split(','):
+                        if i in cfile:
+                            f.append(i)
+                            checker = True
+                        else:
+                            print(f'not a valid file {i}')
+                elif files.find(' '):
+                    for i in files.split(' '):
+                        if i in cfile:
+                            f.append(i)
+                            checker = True
+                        else:
+                            print(f'Not a valid file {i}')
+                elif ',' not in files and ' ' not in files:
+                        if files in cfile:
+                            f.append(files)
+                            checker = True
+                        else:
+                            print(f'Not a valid file {i}')
+            if checker:
+                for e in f:
+                    self.command(f'git add {e}')
+                print('New files added: '+str(f))
         else:
-            cfile = self.getNewFiles()
-            if files.find(','):
-                for i in files.split(','):
-                    if i in cfile:
-                        f.append(i)
-                        checker = True
-                    else:
-                        print(f'not a valid file {i}')
-            elif files.find(' '):
-                for i in files.split(' '):
-                    if i in cfile:
-                        f.append(i)
-                        checker = True
-                    else:
-                        print(f'Not a valid file {i}')
-            elif ',' not in files and ' ' not in files:
-                    if files in cfile:
-                        f.append(files)
-                        checker = True
-                    else:
-                        print(f'Not a valid file {i}')
-        if checker:
-            for e in f:
-                self.command(f'git add {e}')
-            print('New files added: '+str(f))
+            print('No files to add')    
 
     def addModifiedFiles(self,repoDir=None,files=None):
         if repoDir == None:
@@ -94,38 +98,42 @@ class Gitfy:
         else:
             repoDir = repoDir
         os.chdir(repoDir)
-        f = []
-        checker = None
-        if files == None:
-            files = self.getModified()
-            f.extend(files)
-            checker = True
+        gm = self.getModified()
+        if len(gm) > 0:
+            f = []
+            checker = None
+            if files == None:
+                files = self.getModified()
+                f.extend(files)
+                checker = True
+            else:
+                cfile = self.getModified()
+                if files.find(','):
+                    for i in files.split(','):
+                        if i in cfile:
+                            f.append(i)
+                            checker = True
+                        else:
+                            print(f'not a valid file {i}')
+                elif files.find(' '):
+                    for i in files.split(' '):
+                        if i in cfile:
+                            f.append(i)
+                            checker = True
+                        else:
+                            print(f'Not a valid file {i}')
+                elif ',' not in files and ' ' not in files:
+                        if files in cfile:
+                            f.append(files)
+                            checker = True
+                        else:
+                            print(f'Not a valid file {i}')
+            if checker:
+                for e in f:
+                    self.command(f'git add {e}')
+                print('New files added: '+str(f))
         else:
-            cfile = self.getModified()
-            if files.find(','):
-                for i in files.split(','):
-                    if i in cfile:
-                        f.append(i)
-                        checker = True
-                    else:
-                        print(f'not a valid file {i}')
-            elif files.find(' '):
-                for i in files.split(' '):
-                    if i in cfile:
-                        f.append(i)
-                        checker = True
-                    else:
-                        print(f'Not a valid file {i}')
-            elif ',' not in files and ' ' not in files:
-                    if files in cfile:
-                        f.append(files)
-                        checker = True
-                    else:
-                        print(f'Not a valid file {i}')
-        if checker:
-            for e in f:
-                self.command(f'git add {e}')
-            print('New files added: '+str(f))
+            print('No files modified')
 
     def gitCommit(self,commitMsg=None):
         if commitMsg == None:
