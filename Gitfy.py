@@ -4,8 +4,20 @@ from subprocess import *
 class Gitfy:
     def __init__(self):
         pass
+    
     def command(self,x):
         return str(Popen(x.split(' '), stdout=PIPE).communicate()[0])
+
+    def gitInit(self):
+        status = self.command('git init')
+        print(status.replace('\\n','').replace("b'",''))
+
+    def gitStatus(self):
+        status = self.command('git status')
+        status = status.replace('\\t','  ')
+        status = status.split('\\n')
+        for s in status:
+            print(s.replace('\\',' '))
 
     def getNewFiles(self,repoDir=None):
         if repoDir == None:
@@ -163,6 +175,3 @@ class Gitfy:
                 self.command('git push -u orgin master')
             else:
                 self.command(f'git push -u orgin {branch}')
-
-# print(getNewFiles())
-# print(getModified())

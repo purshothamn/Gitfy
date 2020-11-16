@@ -1,3 +1,5 @@
 Gitfy
 V1.0:
     *minor bug fixes
+    *Added git init support
+    *Added git status support
