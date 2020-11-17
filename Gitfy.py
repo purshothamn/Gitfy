@@ -187,22 +187,22 @@ class Gitfy:
 
     def gitPull(self, remote=None, branch=None):
         if remote == None:
-            remote = command('git remote').replace("b'",'').replace("\\n'",'')
+            remote = self.command('git remote').replace("b'",'').replace("\\n'",'')
         else:
             remote = remote
         if branch == None:
-            branch = command('git branch').replace("b'* ",'').replace("'\\n'",'')
+            branch = self.command('git branch').replace("b'* ",'').replace("'\\n'",'')
         else:
             branch = branch
         self.command(f'git pull {remote} {branch}')
 
     def gitPush(self, remote=None, branch=None, force=False):
         if remote == None:
-            remote = command('git remote').replace("b'",'').replace("\\n'",'')
+            remote = self.command('git remote').replace("b'",'').replace("\\n'",'')
         else:
             remote = remote
         if branch == None:
-            branch = command('git branch').replace("b'* ",'').replace("'\\n'",'')
+            branch = self.command('git branch').replace("b'* ",'').replace("'\\n'",'')
         else:
             branch = branch
         if force:
