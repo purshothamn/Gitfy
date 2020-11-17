@@ -3,3 +3,7 @@ V1.0:
     *minor bug fixes
     *Added git init support
     *Added git status support
+V1.1:
+    *minor bug fixes
+    *Added git pull support
+    *Added git config support

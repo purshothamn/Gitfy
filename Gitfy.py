@@ -4,13 +4,34 @@ from subprocess import *
 class Gitfy:
     def __init__(self):
         pass
-    
+
     def command(self,x):
         return str(Popen(x.split(' '), stdout=PIPE).communicate()[0])
 
     def gitInit(self):
         status = self.command('git init')
         print(status.replace('\\n','').replace("b'",''))
+
+    def gitConfig(self, remoteName, url, username=None, email=None, global_config=False):
+        self.command(f'git remote add {remoteName} {url}')
+        if global_config:
+            if username == None:
+                pass
+            else:
+                self.command(f'git config --global user.name {username}')
+            if email == None:
+                pass
+            else:
+                self.command(f'git config --global user.email {email}')
+        else:
+            if username == None:
+                pass
+            else:
+                self.command(f'git config user.name {username}')
+            if email == None:
+                pass
+            else:
+                self.command(f'git config user.email {email}')
 
     def gitStatus(self):
         status = self.command('git status')
@@ -164,14 +185,27 @@ class Gitfy:
             commitMsg = commitMsg.replace(' ','_')
             self.command(f"git commit -m '{commitMsg}'")
 
-    def gitPush(self, branch='master', force=False):
-        if force:
-            if branch == 'master':
-                self.command('git push -uf orgin master')
-            else:
-                self.command(f'git push -uf orgin {branch}')
+    def gitPull(self, remote=None, branch=None):
+        if remote == None:
+            remote = command('git remote').replace("b'",'').replace("\\n'",'')
         else:
-            if branch == 'master':
-                self.command('git push -u orgin master')
-            else:
-                self.command(f'git push -u orgin {branch}')
+            remote = remote
+        if branch == None:
+            branch = command('git branch').replace("b'* ",'').replace("'\\n'",'')
+        else:
+            branch = branch
+        self.command(f'git pull {remote} {branch}')
+
+    def gitPush(self, remote=None, branch=None, force=False):
+        if remote == None:
+            remote = command('git remote').replace("b'",'').replace("\\n'",'')
+        else:
+            remote = remote
+        if branch == None:
+            branch = command('git branch').replace("b'* ",'').replace("'\\n'",'')
+        else:
+            branch = branch
+        if force:
+            self.command(f'git push -uf {remote} {branch}')
+        else:
+            self.command(f'git push -u {remote} {branch}')
