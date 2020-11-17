@@ -203,6 +203,7 @@ class Gitfy:
             remote = remote
         if branch == None:
             branch = self.command('git branch').replace("b'* ",'').replace("'\\n'",'')
+            branch = branch.replace('\n','')
         else:
             branch = branch
         
