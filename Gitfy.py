@@ -206,9 +206,6 @@ class Gitfy:
             branch = branch.replace("\\n'",'')
         else:
             branch = branch
-        
-        print(branch,remote)
-        input('Debug')
         if force:
             self.command(f'git push -uf {remote} {branch}')
         else:
