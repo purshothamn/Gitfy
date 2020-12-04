@@ -20,7 +20,7 @@ steps:
   displayName: 'Use Python $(python.version)'
 - task: CmdLine@2
   inputs:
-    script: apt install git -y
+    script: apt-get install git -y
 - script: |
     python -m pip install --upgrade pip
 
