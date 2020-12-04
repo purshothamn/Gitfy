@@ -3,10 +3,10 @@ from Gitfy import Gitfy
 g = Gitfy()
 
 # To initialize empty repository
-# g.gitInit()
+g.gitInit()
 
 # To check the git status
-# g.gitStatus()
+g.gitStatus()
 
 # To Get list of New files added to repository
 # print(g.getNewFiles())
