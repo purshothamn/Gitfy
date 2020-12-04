@@ -18,9 +18,10 @@ steps:
   inputs:
     versionSpec: '$(python.version)'
   displayName: 'Use Python $(python.version)'
-
+- task: CmdLine@2
+  inputs:
+    script: apt install git -y
 - script: |
-    apt install git -y
     python -m pip install --upgrade pip
 
 - script: |
